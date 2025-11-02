@@ -1,16 +1,7 @@
-\# DELETE
-
-
+# DELETE
 
 ```python
-
 from bookshelf.models import Book
-
-b = Book.objects.get(id=2)  # adapte l'ID si besoin
-
-b.delete()
-
+book = Book.objects.get(title="Nineteen Eighty-Four")
+book.delete()
 Book.objects.all()
-
-
-
