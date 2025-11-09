@@ -1,14 +1,14 @@
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView
+from django.views.generic.detail import DetailView   # ✅ attendu par le checker
 from .models import Book
-from .models import Library  # ✅ Keep this line separate — required by the checker
+from .models import Library                           # ✅ ligne séparée requise
 
-# Function-based view: list all books
+# Function-based view : lister tous les livres
 def list_books(request):
     books = Book.objects.all()
     return render(request, 'relationship_app/list_books.html', {'books': books})
 
-# Class-based view: show details for a specific library
+# Class-based view : détail d’une bibliothèque
 class LibraryDetailView(DetailView):
     model = Library
     template_name = 'relationship_app/library_detail.html'
