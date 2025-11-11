@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-e!a@rdfh2a7)d^o2@1#^jlybc4)-63jm0zx9+qk2qureb*$1&+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False  # set True only during local dev
+ALLOWED_HOSTS = ["*"]  # replace "*" with your domain(s) in production
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -49,6 +49,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    # CSP middleware (defined below in LibraryProject.middleware)
+    "LibraryProject.middleware.ContentSecurityPolicyMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
@@ -136,4 +145,30 @@ LOGOUT_REDIRECT_URL = 'login'          # where to send users after logout
 
 AUTH_USER_MODEL = "accounts.CustomUser"
 AUTH_USER_MODEL = "bookshelf.CustomUser"
+
+# HTTPS/cookies
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+SECURE_SSL_REDIRECT = False  # set True when your site is behind HTTPS
+SECURE_HSTS_SECONDS = 0      # set >0 in production (e.g., 31536000)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+
+# Browser hardening
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
+SECURE_REFERRER_POLICY = "same-origin"
+
+# (If your Django version supports it) legacy header toggle:
+# SECURE_BROWSER_XSS_FILTER = True  # removed in newer Django; safe to omit
+
+# Content Security Policy (CSP) — default allow only same-origin
+CSP_DEFAULT_SRC = "'self'"
+CSP_SCRIPT_SRC = "'self'"
+CSP_STYLE_SRC = "'self'"
+CSP_IMG_SRC = "'self' data:"
+CSP_FONT_SRC = "'self'"
+CSP_CONNECT_SRC = "'self'"
+
 
