@@ -12,11 +12,16 @@ class Book(models.Model):
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 
+from django.db import models
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 
-class CustomUserManager(UserManager):
+
+class CustomUserManager(BaseUserManager):
+    use_in_migrations = True
+
     def create_user(self, username, email=None, password=None, **extra_fields):
         if not username:
-            raise ValueError("Users must have a username")
+            raise ValueError("The username must be set")
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
@@ -44,8 +49,3 @@ class CustomUser(AbstractUser):
         return self.username
 
 
-# --- keep your other bookshelf models (if any) below ---
-# e.g.
-# class Book(models.Model):
-#     title = models.CharField(max_length=255)
-#     ...
