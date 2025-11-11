@@ -76,15 +76,36 @@ from django import forms
 from .models import Book
 
 
-# simple model form used by the 3 views
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required, permission_required
+from django import forms
+
+from .models import Book
+
+
+# ---- Forms ----
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ["title", "author", "publication_year"]
 
+
+# ---- Views protected with custom permissions ----
+
 @login_required
-@permission_required("relationship_app.can_add_book", raise_exception=True)
+@permission_required("relationship_app.can_view", raise_exception=True)
+def list_books(request):
+    """List all books (requires can_view)."""
+    books = Book.objects.all()
+    return render(request, "relationship_app/list_books.html", {"books": books})
+
+
+@login_required
+@permission_required("relationship_app.can_create", raise_exception=True)
 def add_book_view(request):
+    """Create a book (requires can_create)."""
     if request.method == "POST":
         form = BookForm(request.POST)
         if form.is_valid():
@@ -94,9 +115,11 @@ def add_book_view(request):
         form = BookForm()
     return render(request, "relationship_app/book_form.html", {"form": form, "action": "Add"})
 
+
 @login_required
-@permission_required("relationship_app.can_change_book", raise_exception=True)
+@permission_required("relationship_app.can_edit", raise_exception=True)
 def edit_book_view(request, pk):
+    """Edit a book (requires can_edit)."""
     book = get_object_or_404(Book, pk=pk)
     if request.method == "POST":
         form = BookForm(request.POST, instance=book)
@@ -107,15 +130,16 @@ def edit_book_view(request, pk):
         form = BookForm(instance=book)
     return render(request, "relationship_app/book_form.html", {"form": form, "action": "Edit"})
 
+
 @login_required
-@permission_required("relationship_app.can_delete_book", raise_exception=True)
+@permission_required("relationship_app.can_delete", raise_exception=True)
 def delete_book_view(request, pk):
+    """Delete a book (requires can_delete)."""
     book = get_object_or_404(Book, pk=pk)
     if request.method == "POST":
         book.delete()
         return redirect("list_books")
     return render(request, "relationship_app/book_confirm_delete.html", {"book": book})
-
 
 
 
