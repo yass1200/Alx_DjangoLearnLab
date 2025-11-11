@@ -78,3 +78,24 @@ class Book(models.Model):
             ("can_delete_book", "Can delete book (custom)"),
         )
 
+# relationship_app/models.py
+from django.db import models
+
+# ... your Author, Library, Librarian models above ...
+
+class Book(models.Model):
+    title = models.CharField(max_length=255)
+    author = models.ForeignKey('Author', on_delete=models.CASCADE)
+    publication_year = models.IntegerField()
+
+    class Meta:
+        permissions = (
+            ("can_view", "Can view books"),
+            ("can_create", "Can create books"),
+            ("can_edit", "Can edit books"),
+            ("can_delete", "Can delete books"),
+        )
+
+    def __str__(self):
+        return f"{self.title} ({self.publication_year})"
+
