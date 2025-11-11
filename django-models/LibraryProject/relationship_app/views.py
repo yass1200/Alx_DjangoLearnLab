@@ -2,6 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required, permission_required
+from django import forms
+
+from .models import Book
+
+
 
 # --- Registration (function-based) ---
 def register(request):
@@ -51,7 +58,8 @@ from django import forms
 
 from .models import Book
 
-# Simple form for Book
+
+# simple model form used by the 3 views
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
@@ -64,7 +72,7 @@ def add_book_view(request):
         form = BookForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("list_books")  # reuse your list view route
+            return redirect("list_books")
     else:
         form = BookForm()
     return render(request, "relationship_app/book_form.html", {"form": form, "action": "Add"})
@@ -90,3 +98,4 @@ def delete_book_view(request, pk):
         book.delete()
         return redirect("list_books")
     return render(request, "relationship_app/book_confirm_delete.html", {"book": book})
+
