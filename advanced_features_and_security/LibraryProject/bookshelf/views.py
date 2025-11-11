@@ -72,3 +72,25 @@ def delete_book(request, pk):
         return redirect("bookshelf:book_list")
     # Reuse form_example for a simple confirm, or keep your dedicated template
     return render(request, "bookshelf/form_example.html", {"form": None, "action": "Confirm delete", "book": book})
+
+# LibraryProject/bookshelf/views.py
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_protect
+from .forms import ExampleForm
+
+
+@csrf_protect
+def example_form_view(request):
+    """
+    Demonstrates secure form handling (CSRF token, input validation).
+    """
+    if request.method == "POST":
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # Handle sanitized data securely (no direct SQL!)
+            cleaned = form.cleaned_data
+            # You could save or log it; we just show success message
+            return render(request, "bookshelf/form_example.html", {"form": form, "success": True})
+    else:
+        form = ExampleForm()
+    return render(request, "bookshelf/form_example.html", {"form": form})
