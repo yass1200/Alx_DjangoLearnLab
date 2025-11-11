@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ action }} Book</title>
+</head>
+<body>
+  <h1>{{ action }} Book</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {% if form %}
+      {{ form.as_p }}
+      <button type="submit">{{ action }}</button>
+    {% else %}
+      <p>Are you sure you want to delete: <strong>{{ book.title }}</strong>?</p>
+      <button type="submit">Yes, delete</button>
+    {% endif %}
+  </form>
+
+  <p><a href="{% url 'bookshelf:book_list' %}">Back to list</a></p>
+</body>
+</html>
