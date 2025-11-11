@@ -3,6 +3,11 @@ from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView
 from . import views
 
+
+from django.urls import path
+from . import views
+
+
 urlpatterns = [
     # Auth
     path('login/',  LoginView.as_view(template_name='relationship_app/login.html'),  name='login'),
@@ -18,5 +23,8 @@ urlpatterns = [
     path('books/add/', views.add_book_view, name='add_book'),
     path('books/<int:pk>/edit/', views.edit_book_view, name='edit_book'),
     path('books/<int:pk>/delete/', views.delete_book_view, name='delete_book'),
+    path("books/add/", views.add_book_view, name="add_book"),
+    path("books/<int:pk>/edit/", views.edit_book_view, name="edit_book"),
+    path("books/<int:pk>/delete/", views.delete_book_view, name="delete_book"),
 ]
 
