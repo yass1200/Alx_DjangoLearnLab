@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Books</title>
+</head>
+<body>
+  <h1>Books</h1>
+
+  <form method="get" action=".">
+    <!-- GET forms do not need csrf, but keeping only POST forms with csrf -->
+    {{ form.q.label_tag }} {{ form.q }}
+    <button type="submit">Search</button>
+  </form>
+
+  <ul>
+    {% for book in books %}
+      <li>{{ book.title }} — {{ book.author.name }}</li>
+    {% empty %}
+      <li>No books found.</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
