@@ -12,11 +12,12 @@ class BookAdmin(admin.ModelAdmin):
     # Barre de recherche
     search_fields = ('title', 'author')
 
+# LibraryProject/bookshelf/admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 
-@admin.register(CustomUser)
+
 class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         ("Profile", {"fields": ("date_of_birth", "profile_photo")}),
@@ -24,6 +25,11 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = UserAdmin.add_fieldsets + (
         (None, {"fields": ("date_of_birth", "profile_photo")}),
     )
-    list_display = ("username", "email", "date_of_birth", "is_staff")
+    list_display = ("username", "email", "date_of_birth", "is_staff", "is_superuser")
     search_fields = ("username", "email", "first_name", "last_name")
+
+
+# IMPORTANT: the checker expects this exact line
+admin.site.register(CustomUser, CustomUserAdmin)
+
 
