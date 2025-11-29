@@ -139,3 +139,12 @@ REST_FRAMEWORK = {
     ]
 }
 
+
+# Add at the bottom of settings.py
+# Testing configuration
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+# Use SQLite in-memory database for faster tests
+DATABASES['default']['TEST'] = {
+    'NAME': ':memory:',
+}
