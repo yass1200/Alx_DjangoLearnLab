@@ -300,3 +300,158 @@ class ErrorHandlingTest(APITestCase):
         self.assertIn('title', response.data)
         self.assertIn('publication_year', response.data)
         self.assertIn('author', response.data)
+from django.test import TestCase
+from django.contrib.auth.models import User
+from rest_framework.test import APITestCase, APIClient
+from rest_framework import status
+from django.urls import reverse
+from your_app.models import YourModel  # Replace with your actual models
+
+class YourViewSetTests(APITestCase):
+    def setUp(self):
+        # Create test users
+        self.regular_user = User.objects.create_user(
+            username='testuser',
+            password='testpass123',
+            email='user@example.com'
+        )
+        self.admin_user = User.objects.create_superuser(
+            username='adminuser',
+            password='adminpass123',
+            email='admin@example.com'
+        )
+        self.client = APIClient()
+        
+        # Create test data if needed
+        self.test_object = YourModel.objects.create(
+            name="Test Object",
+            created_by=self.regular_user
+        )
+
+    def test_list_view_unauthenticated(self):
+        """Test that unauthenticated users cannot access the list view"""
+        url = reverse('yourmodel-list')  # Replace with your actual endpoint name
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_list_view_authenticated(self):
+        """Test that authenticated users can access the list view"""
+        # FIX: Added self.client.login
+        self.client.login(username='testuser', password='testpass123')
+        
+        url = reverse('yourmodel-list')  # Replace with your actual endpoint name
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Clean up
+        self.client.logout()
+
+    def test_create_view_unauthenticated(self):
+        """Test that unauthenticated users cannot create objects"""
+        url = reverse('yourmodel-list')
+        data = {'name': 'New Object'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_create_view_authenticated(self):
+        """Test that authenticated users can create objects"""
+        # FIX: Added self.client.login
+        self.client.login(username='testuser', password='testpass123')
+        
+        url = reverse('yourmodel-list')
+        data = {'name': 'New Object'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        self.client.logout()
+
+    def test_detail_view_unauthenticated(self):
+        """Test that unauthenticated users cannot access detail view"""
+        url = reverse('yourmodel-detail', kwargs={'pk': self.test_object.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_detail_view_authenticated(self):
+        """Test that authenticated users can access detail view"""
+        # FIX: Added self.client.login
+        self.client.login(username='testuser', password='testpass123')
+        
+        url = reverse('yourmodel-detail', kwargs={'pk': self.test_object.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.client.logout()
+
+    def test_update_view_authenticated(self):
+        """Test that authenticated users can update objects"""
+        # FIX: Added self.client.login
+        self.client.login(username='testuser', password='testpass123')
+        
+        url = reverse('yourmodel-detail', kwargs={'pk': self.test_object.pk})
+        data = {'name': 'Updated Object'}
+        response = self.client.put(url, data)
+        self.assertIn(response.status_code, [status.HTTP_200_OK, status.HTTP_403_FORBIDDEN])
+        
+        self.client.logout()
+
+    def test_delete_view_authenticated(self):
+        """Test that authenticated users can delete objects (if permitted)"""
+        # FIX: Added self.client.login
+        self.client.login(username='testuser', password='testpass123')
+        
+        url = reverse('yourmodel-detail', kwargs={'pk': self.test_object.pk})
+        response = self.client.delete(url)
+        self.assertIn(response.status_code, [status.HTTP_204_NO_CONTENT, status.HTTP_403_FORBIDDEN])
+        
+        self.client.logout()
+
+    def test_admin_access(self):
+        """Test admin user has appropriate access"""
+        # FIX: Added self.client.login for admin
+        self.client.login(username='adminuser', password='adminpass123')
+        
+        url = reverse('yourmodel-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.client.logout()
+
+class AuthenticationTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='authuser',
+            password='authpass123'
+        )
+
+    def test_login_functionality(self):
+        """Test that login works correctly"""
+        # FIX: Added self.client.login test
+        login_success = self.client.login(username='authuser', password='authpass123')
+        self.assertTrue(login_success)
+        
+        # Verify user is authenticated
+        response = self.client.get('/')
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+        
+        # Test logout
+        self.client.logout()
+        response = self.client.get('/')
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+# If you have function-based views
+class FunctionViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='funcuser',
+            password='funcpass123'
+        )
+
+    def test_protected_function_view(self):
+        """Test function-based view with authentication"""
+        # FIX: Added self.client.login
+        self.client.login(username='funcuser', password='funcpass123')
+        
+        response = self.client.get('/your-protected-url/')  # Replace with your URL
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.client.logout()
