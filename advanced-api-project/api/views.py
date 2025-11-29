@@ -104,3 +104,19 @@ class BookListView(generics.ListAPIView):
         if author_id:
             queryset = queryset.filter(author_id=author_id)
         return queryset
+from .permissions import IsAdminOrReadOnly
+
+class BookCreateView(generics.CreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Or [IsAdminOrReadOnly]
+
+class BookUpdateView(generics.UpdateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Or [IsAdminOrReadOnly]
+
+class BookDeleteView(generics.DestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Or [IsAdminOrReadOnly]
