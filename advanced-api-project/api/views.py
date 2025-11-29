@@ -293,3 +293,23 @@ class BookDeleteView(generics.DestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
+
+class AuthorListView(generics.ListAPIView):
+    """
+    ListView for retrieving all authors with filtering and searching capabilities.
+    """
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+    permission_classes = [AllowAny]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['name']
+    ordering_fields = ['name']
+    ordering = ['name']
+
+class AuthorDetailView(generics.RetrieveAPIView):
+    """
+    DetailView for retrieving a single author by ID.
+    """
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+    permission_classes = [AllowAny]
