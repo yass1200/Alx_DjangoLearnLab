@@ -1,25 +1,18 @@
 import django_filters
 from .models import Book
 
+
+import django_filters
+from .models import Book
+
 class BookFilter(django_filters.FilterSet):
     """
-    Custom filter for Book model to enable advanced filtering capabilities.
-    Supports filtering by title, author name, and publication year ranges.
+    Custom filter for Book model to enable filtering by title, author, and publication_year.
     """
-    title = django_filters.CharFilter(lookup_expr='icontains', label='Title contains')
-    author__name = django_filters.CharFilter(lookup_expr='icontains', label='Author name contains')
-    publication_year = django_filters.NumberFilter(label='Exact publication year')
-    publication_year__gte = django_filters.NumberFilter(
-        field_name='publication_year', 
-        lookup_expr='gte',
-        label='Publication year greater than or equal to'
-    )
-    publication_year__lte = django_filters.NumberFilter(
-        field_name='publication_year', 
-        lookup_expr='lte',
-        label='Publication year less than or equal to'
-    )
+    title = django_filters.CharFilter(lookup_expr='icontains')
+    author = django_filters.CharFilter(field_name='author__name', lookup_expr='icontains')
+    publication_year = django_filters.NumberFilter()
 
     class Meta:
         model = Book
-        fields = ['title', 'author__name', 'publication_year']
+        fields = ['title', 'author', 'publication_year']
