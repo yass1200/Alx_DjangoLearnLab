@@ -3,8 +3,6 @@ from . import views
 
 app_name = "blog"
 
-from django.urls import path
-from . import views
 
 urlpatterns = [
     # Post CRUD
