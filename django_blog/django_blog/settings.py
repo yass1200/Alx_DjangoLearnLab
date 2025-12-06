@@ -133,6 +133,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Update TEMPLATES DIRS:
 import os
 from pathlib import Path
+LOGIN_URL = 'blog:login'
+LOGIN_REDIRECT_URL = 'blog:home'
+LOGOUT_REDIRECT_URL = 'blog:home'
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -198,5 +201,6 @@ DATABASES = {
         'PORT': '',      # MUST BE PRESENT
     }
 }
+
 
 
