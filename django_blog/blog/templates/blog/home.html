@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h1>Welcome to Django Blog</h1>
+<p>Share your thoughts and ideas with the world.</p>
+
+{% if user.is_authenticated %}
+    <div class="welcome-message">
+        <p>Hello, {{ user.username }}! Ready to create your first post?</p>
+    </div>
+{% else %}
+    <div class="auth-prompt">
+        <p>Join our community to start blogging!</p>
+        <div class="auth-buttons">
+            <a href="{% url 'login' %}" class="btn">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
+        </div>
+    </div>
+{% endif %}
+
+<h2>Recent Posts</h2>
+{% for post in posts %}
+    <div class="post-preview">
+        <h3>{{ post.title }}</h3>
+        <p class="post-meta">By {{ post.author.username }} on {{ post.published_date|date:"F d, Y" }}</p>
+        <p>{{ post.content|truncatewords:30 }}</p>
+        <a href="#" class="read-more">Read More</a>
+    </div>
+{% empty %}
+    <p>No posts yet. Be the first to create one!</p>
+{% endfor %}
+{% endblock %}
