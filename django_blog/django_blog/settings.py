@@ -73,10 +73,16 @@ WSGI_APPLICATION = "django_blog.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# In your settings.py file, find the DATABASES section and REPLACE it with:
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        'USER': '',           # ← MUST BE PRESENT (even if empty)
+        'PASSWORD': '',       # ← MUST BE PRESENT (even if empty)
+        'HOST': '',           # ← MUST BE PRESENT (even if empty)
+        'PORT': '',           # ← MUST BE PRESENT (even if empty)
     }
 }
 
@@ -148,3 +154,4 @@ TEMPLATES = [
 # Add static files configuration:
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
